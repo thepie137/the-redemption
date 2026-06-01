@@ -1,4 +1,4 @@
-g# The Redemption — Cloud Engineer Assessment
+# The Redemption — Cloud Engineer Assessment
 
 Reference architecture and Infrastructure-as-Code for **"The Redemption"**, a
 business-critical microservice on AWS EKS handling global hotel loyalty-point
