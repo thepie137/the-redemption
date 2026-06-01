@@ -1,0 +1,90 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: redemption-default-deny
+  namespace: redemption
+spec:
+  # Default-deny baseline. Every allow rule is additive below.
+  podSelector: {}
+  policyTypes: [Ingress, Egress]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: redemption-allow-ingress
+  namespace: redemption
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: redemption
+  policyTypes: [Ingress]
+  ingress:
+    # Traffic from the ALB controller's target-group pod IPs only.
+    # The ALB itself is outside the cluster network, so this matches
+    # the kube-system label that LBC pods carry.
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - port: 8080
+          protocol: TCP
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+      ports:
+        - port: 9090
+          protocol: TCP
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: redemption-allow-egress
+  namespace: redemption
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: redemption
+  policyTypes: [Egress]
+  egress:
+    # CoreDNS for service discovery.
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    # Backing data stores live in the private_data subnets. We allow
+    # the CIDR rather than naming each store so adding a new replica
+    # does not require a NetworkPolicy edit.
+    - to:
+        - ipBlock:
+            cidr: 10.40.8.0/21
+      ports:
+        - port: 5432
+          protocol: TCP
+        - port: 6379
+          protocol: TCP
+    # AWS API access goes through the VPC interface endpoints. Those
+    # are in the app subnets, so allow the full VPC range on 443.
+    - to:
+        - ipBlock:
+            cidr: 10.40.0.0/16
+      ports:
+        - port: 443
+          protocol: TCP
+    # OTEL collector in the observability namespace.
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: observability
+      ports:
+        - port: 4317
+          protocol: TCP

@@ -1,0 +1,13 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: redemption
+  namespace: redemption
+spec:
+  # maxUnavailable as a percentage so the budget scales with replica
+  # count during a flash sale. Karpenter consolidation, node upgrades
+  # and AZ drains all respect this.
+  maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: redemption

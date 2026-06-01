@@ -1,0 +1,51 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: redemption
+  namespace: redemption
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: redemption
+  minReplicas: 6
+  maxReplicas: 120
+  metrics:
+    # Two signals: CPU as a safety net, RPS-per-pod (via Prometheus
+    # Adapter) as the real driver. RPS reacts ~10s after a spike
+    # whereas CPU lags by 30-60s — too slow for flash sales.
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 65
+    - type: Pods
+      pods:
+        metric:
+          name: http_requests_per_second
+        target:
+          type: AverageValue
+          averageValue: "120"
+  behavior:
+    scaleUp:
+      # Aggressive scale-out: double or +20 pods every 15s, no
+      # stabilization window. We pay for compute over latency on
+      # flash-sale spikes — that's the explicit business trade-off.
+      stabilizationWindowSeconds: 0
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 15
+        - type: Pods
+          value: 20
+          periodSeconds: 15
+      selectPolicy: Max
+    scaleDown:
+      # Conservative scale-in: wait 10 minutes after the burst to
+      # avoid thrashing if the spike is a multi-wave pattern.
+      stabilizationWindowSeconds: 600
+      policies:
+        - type: Percent
+          value: 20
+          periodSeconds: 60

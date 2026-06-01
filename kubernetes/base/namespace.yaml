@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: redemption
+  labels:
+    name: redemption
+    # Enforce restricted Pod Security Standard cluster-wide: no privileged
+    # containers, no host networking, runAsNonRoot. Blocks the largest
+    # class of container-escape CVEs without any sidecar tooling.
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted

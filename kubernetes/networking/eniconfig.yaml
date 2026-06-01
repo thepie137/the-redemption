@@ -1,0 +1,42 @@
+# VPC CNI custom networking — one ENIConfig per AZ.
+#
+# With AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG=true (set on the vpc-cni add-on) and
+# ENI_CONFIG_LABEL_DEF=topology.kubernetes.io/zone, the CNI looks up the
+# ENIConfig whose name matches the node's zone label and places the pod's ENI
+# in that subnet + security group. Result: NODES get 10.x addresses (their
+# primary ENI in the private_app subnet) and PODS get 100.x addresses (from
+# the pod subnet below).
+#
+# Fill the placeholders from `terraform output`:
+#   subnet  = th_pod_subnet_ids_by_az["ap-southeast-7a"]      (etc.)
+#   sg      = th_cluster_pod_security_group_id
+# In production these are templated by the GitOps overlay per cluster/region.
+#
+# IMPORTANT: the ENIConfig name MUST equal the AZ name (topology.kubernetes.io/zone).
+---
+apiVersion: crd.k8s.amazonaws.com/v1alpha1
+kind: ENIConfig
+metadata:
+  name: ap-southeast-7a
+spec:
+  subnet: subnet-POD_AZ_7A          # th_pod_subnet_ids_by_az["ap-southeast-7a"]
+  securityGroups:
+    - sg-CLUSTER_POD_SG             # th_cluster_pod_security_group_id
+---
+apiVersion: crd.k8s.amazonaws.com/v1alpha1
+kind: ENIConfig
+metadata:
+  name: ap-southeast-7b
+spec:
+  subnet: subnet-POD_AZ_7B
+  securityGroups:
+    - sg-CLUSTER_POD_SG
+---
+apiVersion: crd.k8s.amazonaws.com/v1alpha1
+kind: ENIConfig
+metadata:
+  name: ap-southeast-7c
+spec:
+  subnet: subnet-POD_AZ_7C
+  securityGroups:
+    - sg-CLUSTER_POD_SG

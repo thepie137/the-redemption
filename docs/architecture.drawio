@@ -1,0 +1,454 @@
+<mxfile host="65bd71144e" pages="2">
+    <diagram name="Full Architecture" id="full-arch">
+        <mxGraphModel dx="1320" dy="1682" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="2400" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="edge_band" value="EDGE · Global" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;verticalAlign=top;fontStyle=1;fontSize=12;opacity=60;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="20" width="1920" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="users" value="Loyalty members&#xa;web + mobile" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="80" width="160" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="r53" value="Route 53&#xa;Global DNS + health checks&#xa;PRIMARY → TH · SECONDARY → SG" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="80" width="260" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="cf" value="CloudFront + Shield Standard&#xa;TLS 1.3 · edge cache" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="600" y="80" width="260" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="waf" value="AWS WAF v2&#xa;Common · KnownBadInputs&#xa;Rate-limit 2 000 / 5 min / IP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="910" y="80" width="260" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="acm" value="ACM&#xa;auto-renew" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;dashed=1;" parent="1" vertex="1">
+                    <mxGeometry x="1220" y="80" width="140" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="guardduty" value="GuardDuty + Security Hub&#xa;CIS pack · Findings → PagerDuty" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad9d5;strokeColor=#ae4132;" parent="1" vertex="1">
+                    <mxGeometry x="1410" y="80" width="280" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="kms_global" value="KMS&#xa;customer-managed&#xa;per-region keys" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="1740" y="80" width="200" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_users_r53" style="endArrow=classic;html=1;strokeWidth=2;" parent="1" source="users" target="r53" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_r53_cf" style="endArrow=classic;html=1;strokeWidth=2;" parent="1" source="r53" target="cf" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_cf_waf" style="endArrow=classic;html=1;strokeWidth=2;" parent="1" source="cf" target="waf" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_region" value="TH · Bangkok ap-southeast-7 (PRIMARY · ACTIVE)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;fontStyle=1;fontSize=14;opacity=50;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="260" width="1100" height="1880" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_alb" value="Application Load Balancer&#xa;3 AZ · TLS 1.3 · WAF-assoc · ACM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="310" width="620" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_vpc" value="VPC 10.40.0.0/16 — 3 AZs (7a · 7b · 7c)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666;dashed=1;verticalAlign=top;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="400" width="1060" height="1720" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_pub" value="Public subnets — NAT GW per AZ" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;verticalAlign=top;opacity=50;fontStyle=2;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="440" width="1020" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_nat_a" value="NAT 7a" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="140" y="475" width="180" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_nat_b" value="NAT 7b" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="500" y="475" width="180" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_nat_c" value="NAT 7c" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="860" y="475" width="180" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_app" value="Private app subnets — EKS 1.30 (Karpenter)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;opacity=40;fontStyle=2;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="540" width="1020" height="380" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_eks" value="EKS Control Plane · KMS-encrypted secrets · OIDC IRSA" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="575" width="940" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_az_a" value="AZ-7a&#xa;Karpenter node (spot)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="140" y="640" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_pod_a" value="redemption pods × 2&#xa;readiness · liveness · IRSA" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="140" y="720" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_az_b" value="AZ-7b&#xa;Karpenter node (spot)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="450" y="640" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_pod_b" value="redemption pods × 2" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="450" y="720" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_az_c" value="AZ-7c&#xa;Karpenter node (on-demand)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="760" y="640" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_pod_c" value="redemption pods × 2" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="760" y="720" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_hpa" value="HPA v2 (RPS-per-pod) · PDB 25 % · NetworkPolicy default-deny · PSS restricted" style="text;html=1;align=center;verticalAlign=middle;fontStyle=2;fontSize=10;fontColor=#444;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="800" width="1020" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_addons" value="Addons — AWS LBC · ExternalDNS · External Secrets · ArgoCD · Argo Rollouts · Fluent Bit · OTel Collector" style="text;html=1;align=center;verticalAlign=middle;fontStyle=2;fontSize=10;fontColor=#444;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="830" width="1020" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_vpce" value="VPC interface endpoints — ECR · STS · Secrets · KMS · Logs · Monitoring (keep AWS API off the NATs)" style="text;html=1;align=center;verticalAlign=middle;fontStyle=2;fontSize=10;fontColor=#444;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="870" width="1020" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_data" value="Private data subnets — isolated route table · stricter NACLs" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;verticalAlign=top;opacity=40;fontStyle=2;fontSize=10;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="940" width="1020" height="1160" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_rds" value="RDS PostgreSQL · Multi-AZ + RDS Proxy · primary writer · KMS · PITR 35 d" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="980" width="940" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_mongo" value="DocumentDB Global Cluster · primary · 3 instances · KMS · backups 35 d" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="1080" width="940" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_redis" value="ElastiCache Redis · cluster mode · 3 shards · HOT · TLS · at-rest KMS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="1180" width="940" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_msk" value="MSK Kafka · 3 brokers · IAM SASL · TLS · active" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="1280" width="940" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_s3" value="S3 bucket · versioning · SSE-KMS · public-access blocked" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="1380" width="940" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_ecr" value="ECR · immutable tags · scan-on-push · SSE-KMS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="1480" width="940" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_secrets" value="Secrets Manager · rotation 30 d · External Secrets refresh 1 h" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="1580" width="940" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_kms" value="KMS · customer-managed keys (EKS · App · EBS · S3)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="1680" width="940" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_logs" value="VPC Flow Logs (REJECT, 90 d) + EKS control-plane audit logs (365 d) → CloudWatch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad9d5;strokeColor=#ae4132;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="1780" width="940" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_region" value="SG · Singapore ap-southeast-1 (STANDBY)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;verticalAlign=top;fontStyle=1;fontSize=14;opacity=50;" parent="1" vertex="1">
+                    <mxGeometry x="1320" y="260" width="640" height="1880" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_alb" value="ALB · SG&#xa;3 AZ · TLS 1.3 · WAF-assoc" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="1380" y="310" width="520" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_eks" value="EKS · cluster up · system NG only · app scaled to 0&#xa;(Karpenter limits.cpu = 100 until promotion)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontStyle=1;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="1380" y="430" width="520" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_vpc" value="VPC 10.140.0.0/16 — 3 AZs (1a · 1b · 1c) · same subnet shape as TH" style="text;html=1;align=center;verticalAlign=middle;fontStyle=2;fontSize=10;fontColor=#666;" parent="1" vertex="1">
+                    <mxGeometry x="1340" y="540" width="600" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_failover_note" value="On failover (runbook RD-01): kubectl patch nodepool → limits.cpu 100 → 2000 · ArgoCD syncs · HPA scales out" style="text;html=1;align=center;verticalAlign=middle;fontStyle=2;fontSize=10;fontColor=#0066CC;whiteSpace=wrap;" parent="1" vertex="1">
+                    <mxGeometry x="1340" y="570" width="600" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_rds" value="RDS · cross-region replica" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1380" y="980" width="520" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_mongo" value="DocumentDB · secondary · 2 inst" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1380" y="1080" width="520" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_redis" value="ElastiCache Redis · EMPTY" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;dashed=1;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1380" y="1180" width="520" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_msk" value="MSK Kafka · EMPTY" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;dashed=1;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1380" y="1280" width="520" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_s3" value="S3 bucket · CRR destination" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1380" y="1380" width="520" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_ecr" value="ECR · CRR replica" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1380" y="1480" width="520" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_secrets" value="Secrets Manager · replica" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1380" y="1580" width="520" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_kms" value="KMS · independent keys" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1380" y="1680" width="520" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_logs" value="Flow Logs + EKS audit → CloudWatch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad9d5;strokeColor=#ae4132;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1380" y="1780" width="520" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="repl_rds" value="async repl&#xa;RPO &lt; 1 min" style="text;html=1;align=center;verticalAlign=middle;fontStyle=2;fontSize=11;fontColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="1075" y="990" width="290" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="repl_mongo" value="Global Cluster&#xa;RPO sec" style="text;html=1;align=center;verticalAlign=middle;fontStyle=2;fontSize=11;fontColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="1075" y="1090" width="290" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="repl_redis" value="NO replication&#xa;preload on failover" style="text;html=1;align=center;verticalAlign=middle;fontStyle=2;fontSize=11;fontColor=#b85450;" parent="1" vertex="1">
+                    <mxGeometry x="1075" y="1190" width="290" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="repl_msk" value="NO replication&#xa;ConfigMap swap" style="text;html=1;align=center;verticalAlign=middle;fontStyle=2;fontSize=11;fontColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="1075" y="1290" width="290" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="repl_s3" value="CRR · RTC 15-min SLA" style="text;html=1;align=center;verticalAlign=middle;fontStyle=2;fontSize=11;fontColor=#82b366;" parent="1" vertex="1">
+                    <mxGeometry x="1075" y="1390" width="290" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="repl_ecr" value="ECR CRR" style="text;html=1;align=center;verticalAlign=middle;fontStyle=2;fontSize=11;fontColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="1075" y="1490" width="290" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="repl_secrets" value="multi-region repl" style="text;html=1;align=center;verticalAlign=middle;fontStyle=2;fontSize=11;fontColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="1075" y="1590" width="290" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="repl_kms" value="independent&#xa;(no replication)" style="text;html=1;align=center;verticalAlign=middle;fontStyle=2;fontSize=11;fontColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="1075" y="1690" width="290" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_waf_th_alb" value="R53 PRIMARY" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#82b366;fontSize=10;" parent="1" source="waf" target="th_alb" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="590" y="240"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_waf_sg_alb" value="R53 SECONDARY" style="endArrow=classic;html=1;dashed=1;strokeColor=#d79b00;fontSize=10;" parent="1" source="waf" target="sg_alb" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1640" y="240"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_th_alb_eks" style="endArrow=classic;html=1;" parent="1" source="th_alb" target="th_eks" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_sg_alb_eks" style="endArrow=classic;html=1;dashed=1;" parent="1" source="sg_alb" target="sg_eks" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_rds_repl" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="th_rds" target="sg_rds" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_mongo_repl" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="th_mongo" target="sg_mongo" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_redis_cold" style="endArrow=none;html=1;dashed=1;strokeColor=#b85450;strokeWidth=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="th_redis" target="sg_redis" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_msk_cold" style="endArrow=none;html=1;dashed=1;strokeColor=#9673a6;strokeWidth=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="th_msk" target="sg_msk" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_s3_repl" style="endArrow=classic;html=1;dashed=1;strokeColor=#82b366;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="th_s3" target="sg_s3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_ecr_repl" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="th_ecr" target="sg_ecr" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_secrets_repl" style="endArrow=classic;html=1;dashed=1;strokeColor=#d6b656;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="th_secrets" target="sg_secrets" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_kms_indep" style="endArrow=none;html=1;dashed=1;strokeColor=#9673a6;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="th_kms" target="sg_kms" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="bottom_band" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999;opacity=40;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="2180" width="1920" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="bottom_label" value="Cross-cutting · Observability · Global DNS per service" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="2185" width="1920" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="amp" value="Amazon Managed Prometheus (SG)&#xa;SLO recording + burn-rate alerts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad9d5;strokeColor=#ae4132;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="2215" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="amg" value="Amazon Managed Grafana (SG)&#xa;SSO-backed dashboards" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad9d5;strokeColor=#ae4132;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="360" y="2215" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="xray" value="AWS X-Ray&#xa;tail-sampling 100 % err · 5 % ok" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad9d5;strokeColor=#ae4132;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="660" y="2215" width="240" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="canary" value="CloudWatch Synthetics&#xa;canary every 60 s · 3 regions" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad9d5;strokeColor=#ae4132;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="2215" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="alerts" value="Alertmanager → PagerDuty&#xa;auto-remediation Lambda (top-3 alerts)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad9d5;strokeColor=#ae4132;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="1220" y="2215" width="280" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="legend" value="→ active · ⇢ R53 SECONDARY · ⇢ replication · EMPTY = cold standby&#xa;RTO ≤ 30 min · RPO ≤ 1 min · SLO 99.95 % · p99 &lt; 500 ms" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666;fontSize=11;fontStyle=2;" parent="1" vertex="1">
+                    <mxGeometry x="1520" y="2215" width="420" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="gdns_db" value="Global DNS · db" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000;fontStyle=1;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="2295" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="gdns_mongo" value="Global DNS · mongo" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000;fontStyle=1;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="2295" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="gdns_cache" value="Global DNS · cache" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000;fontStyle=1;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="540" y="2295" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="gdns_obj" value="S3 MRAP · objects" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000;fontStyle=1;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="780" y="2295" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="gdns_kafka" value="Kafka — no DNS (ConfigMap)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666;fontStyle=2;dashed=1;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="1020" y="2295" width="240" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="gdns_app" value="Global DNS · redemption (app traffic)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000;fontStyle=1;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="1280" y="2295" width="300" height="40" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram name="Active-Standby Data Tier" id="data-tier">
+        <mxGraphModel dx="594" dy="757" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="2400" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="gdns_app" value="Global DNS&#xa;redemption.loyalty.example" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="540" y="20" width="320" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_panel" value="TH · Bangkok ap-southeast-7 (PRIMARY)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;fontStyle=1;fontSize=14;opacity=80;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="100" width="640" height="2200" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_panel" value="SG · Singapore ap-southeast-1 (STANDBY)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;verticalAlign=top;fontStyle=1;fontSize=14;opacity=80;" parent="1" vertex="1">
+                    <mxGeometry x="720" y="100" width="640" height="2200" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_alb" value="ALB · TH" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="240" y="160" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_alb" value="ALB · SG" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="160" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_eks" value="EKS&#xa;Karpenter + HPA · active" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="260" width="280" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_eks" value="EKS&#xa;cluster up · app scaled to 0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="860" y="260" width="280" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="gdns_db" value="Global DNS · db" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="430" width="240" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_rds" value="RDS PostgreSQL&#xa;Multi-AZ · primary" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="510" width="180" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_rds" value="RDS PostgreSQL&#xa;cross-region replica" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="510" width="180" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="gdns_mongo" value="Global DNS · mongo" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="710" width="240" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_mongo" value="DocumentDB&#xa;Global Cluster · primary" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="790" width="180" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_mongo" value="DocumentDB&#xa;Global Cluster · secondary" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="790" width="180" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="gdns_cache" value="Global DNS · cache" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="990" width="240" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_redis" value="ElastiCache Redis&#xa;cluster mode · HOT" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="1070" width="180" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_redis" value="ElastiCache Redis&#xa;EMPTY · cold standby" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#f8cecc;strokeColor=#b85450;dashed=1;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="1070" width="180" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_redis_note" value="Preload from RDS on failover&#xa;(runbook RD-01 step 3b)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#0066CC;fontStyle=2;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="1200" width="220" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="gdns_s3" value="S3 Multi-Region Access Point&#xa;objects.loyalty.example" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="560" y="1280" width="280" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_s3" value="S3 bucket · TH&#xa;versioning + KMS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="1370" width="180" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_s3" value="S3 bucket · SG&#xa;CRR destination" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="1370" width="180" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="s3_note" value="MRAP routes per-request to&#xa;the closest healthy bucket —&#xa;no app reconfig on failover" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#0066CC;fontStyle=2;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="1480" width="220" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="kafka_label" value="MSK Kafka (no DNS — bootstrap is a broker list,&#xa;app reads it from ConfigMap, swapped by ArgoCD on failover)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#666666;fontStyle=2;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="1580" width="520" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_msk" value="MSK · primary&#xa;3 brokers · IAM SASL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="1650" width="180" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_msk" value="MSK · cold standby&#xa;EMPTY" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;dashed=1;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="1650" width="180" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="th_ecr" value="ECR · TH&#xa;immutable tags · scan-on-push" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="1820" width="180" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="sg_ecr" value="ECR · SG&#xa;CRR replica" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="1820" width="180" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="obs" value="Amazon Managed Prometheus + Grafana + X-Ray + CloudWatch&#xa;(runs in Singapore — outside the failure domain of Bangkok)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad9d5;strokeColor=#ae4132;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="1960" width="520" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_gdns_th" style="endArrow=classic;html=1;strokeColor=#82b366;strokeWidth=2;" parent="1" source="gdns_app" target="th_alb" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="340" y="80"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="d_e_gdns_sg" style="endArrow=classic;html=1;dashed=1;strokeColor=#d79b00;" parent="1" source="gdns_app" target="sg_alb" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1000" y="80"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="d_e_th_alb_eks" style="endArrow=classic;html=1;" parent="1" source="th_alb" target="th_eks" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_sg_alb_eks" style="endArrow=classic;html=1;" parent="1" source="sg_alb" target="sg_eks" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_th_eks_gdb" style="endArrow=classic;html=1;" parent="1" source="th_eks" target="gdns_db" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_sg_eks_gdb" style="endArrow=classic;html=1;dashed=1;" parent="1" source="sg_eks" target="gdns_db" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_gdb_th_rds" style="endArrow=classic;html=1;strokeColor=#82b366;strokeWidth=2;" parent="1" source="gdns_db" target="th_rds" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_gdb_sg_rds" style="endArrow=classic;html=1;dashed=1;strokeColor=#d79b00;" parent="1" source="gdns_db" target="sg_rds" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_rds_repl" value="async repl" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;fontSize=10;" parent="1" source="th_rds" target="sg_rds" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_th_eks_gmongo" style="endArrow=classic;html=1;" parent="1" source="th_eks" target="gdns_mongo" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_sg_eks_gmongo" style="endArrow=classic;html=1;dashed=1;" parent="1" source="sg_eks" target="gdns_mongo" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_gmongo_th" style="endArrow=classic;html=1;strokeColor=#82b366;strokeWidth=2;" parent="1" source="gdns_mongo" target="th_mongo" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_gmongo_sg" style="endArrow=classic;html=1;dashed=1;strokeColor=#d79b00;" parent="1" source="gdns_mongo" target="sg_mongo" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_mongo_repl" value="global cluster" style="endArrow=classic;html=1;dashed=1;strokeColor=#9673a6;fontSize=10;" parent="1" source="th_mongo" target="sg_mongo" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_th_eks_gcache" style="endArrow=classic;html=1;" parent="1" source="th_eks" target="gdns_cache" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_sg_eks_gcache" style="endArrow=classic;html=1;dashed=1;" parent="1" source="sg_eks" target="gdns_cache" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_gcache_th" style="endArrow=classic;html=1;strokeColor=#82b366;strokeWidth=2;" parent="1" source="gdns_cache" target="th_redis" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_gcache_sg" style="endArrow=classic;html=1;dashed=1;strokeColor=#d79b00;" parent="1" source="gdns_cache" target="sg_redis" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_th_eks_s3" style="endArrow=classic;html=1;" parent="1" source="th_eks" target="gdns_s3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_sg_eks_s3" style="endArrow=classic;html=1;dashed=1;" parent="1" source="sg_eks" target="gdns_s3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_s3_th" style="endArrow=classic;html=1;" parent="1" source="gdns_s3" target="th_s3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_s3_sg" style="endArrow=classic;html=1;" parent="1" source="gdns_s3" target="sg_s3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_s3_repl" value="CRR" style="endArrow=classic;html=1;dashed=1;strokeColor=#82b366;fontSize=10;" parent="1" source="th_s3" target="sg_s3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_th_eks_kafka" style="endArrow=classic;html=1;" parent="1" source="th_eks" target="th_msk" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_sg_eks_kafka" style="endArrow=classic;html=1;dashed=1;strokeColor=#0066CC;" parent="1" source="sg_eks" target="sg_msk" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="d_e_ecr_repl" value="ECR CRR" style="endArrow=classic;html=1;dashed=1;strokeColor=#6c8ebf;fontSize=10;" parent="1" source="th_ecr" target="sg_ecr" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

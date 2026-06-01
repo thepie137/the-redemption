@@ -1,0 +1,77 @@
+# NodePool for the DR cluster (Singapore, ap-southeast-1).
+# Applied via the DR ArgoCD app — not by the primary cluster.
+#
+# Pilot-light shape: same instance class as primary so failover doesn't
+# need to re-tune resource requests, but `limits.cpu` is set lower
+# until promotion. The runbook scales it up as step 2 of failover.
+apiVersion: karpenter.sh/v1
+kind: NodePool
+metadata:
+  name: redemption
+spec:
+  template:
+    metadata:
+      labels:
+        workload: redemption
+    spec:
+      nodeClassRef:
+        group: karpenter.k8s.aws
+        kind: EC2NodeClass
+        name: redemption
+      requirements:
+        - key: karpenter.sh/capacity-type
+          operator: In
+          values: ["on-demand"]   # DR runs on-demand only — predictable capacity when we need it
+        - key: kubernetes.io/arch
+          operator: In
+          values: ["amd64"]
+        - key: karpenter.k8s.aws/instance-category
+          operator: In
+          values: ["c", "m"]
+        - key: karpenter.k8s.aws/instance-generation
+          operator: Gt
+          values: ["5"]
+        - key: topology.kubernetes.io/zone
+          operator: In
+          values: ["ap-southeast-1a", "ap-southeast-1b", "ap-southeast-1c"]
+      expireAfter: 720h
+      terminationGracePeriod: 60s
+  disruption:
+    consolidationPolicy: WhenEmptyOrUnderutilized
+    consolidateAfter: 5m
+  # Pilot-light cap. Step 2 of runbook RD-01 bumps this to 2000.
+  limits:
+    cpu: "100"
+    memory: 200Gi
+  weight: 100
+---
+apiVersion: karpenter.k8s.aws/v1
+kind: EC2NodeClass
+metadata:
+  name: redemption
+spec:
+  amiFamily: AL2023
+  amiSelectorTerms:
+    - alias: al2023@latest
+  role: redemption-prod-sg-node
+  subnetSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: redemption-prod-sg
+  securityGroupSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: redemption-prod-sg
+  blockDeviceMappings:
+    - deviceName: /dev/xvda
+      ebs:
+        volumeSize: 50Gi
+        volumeType: gp3
+        encrypted: true
+        deleteOnTermination: true
+  metadataOptions:
+    httpTokens: required
+    httpPutResponseHopLimit: 1
+    httpEndpoint: enabled
+  tags:
+    Project: redemption
+    Environment: prod
+    Role: dr
